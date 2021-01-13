@@ -1,0 +1,4 @@
+{
+    "backendUrl":"http://localhost:8081/sapi",
+    "tokenUrl":"http://localhost:8081/api/v1/token"
+}

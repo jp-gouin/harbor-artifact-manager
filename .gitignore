@@ -1,0 +1,12 @@
+admin
+create-react-app-with-typescript/node_modules
+create-react-app-with-typescript/build
+vuegui/node_modules
+vuegui/dist
+var.env
+node_modules
+.rancher-pipeline.yml
+pkg
+backend/gcs.key
+d-g3s-ground-segment-services-3b9915d2df58.json
+bin

@@ -1,0 +1,66 @@
+{
+  "name": "artifact_manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-prod": "NODE_ENV=production vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "core-js": "^3.4.4",
+    "lodash": "^4.17.20",
+    "moment": "^2.24.0",
+    "postcss-import": "^12.0.1",
+    "tailwindcss": "^1.6.2",
+    "vue": "^2.6.11",
+    "vue-blob-json-csv": "^0.1.7",
+    "vue-click-outside": "^1.1.0",
+    "vue-google-oauth2": "^1.5.5",
+    "vue-json-to-csv": "^1.1.8",
+    "vue-jwt-decode": "^0.1.0",
+    "vue-lodash": "^2.1.2",
+    "vue-moment": "^4.1.0",
+    "vue-multiselect": "^2.1.6",
+    "vue-native-websocket": "^2.0.14",
+    "vue-progress-path": "0.0.2",
+    "vue-router": "^3.4.3",
+    "vue-toast-notification": "0.0.3",
+    "vue-tour": "^1.5.0",
+    "vuex": "^3.5.1"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^2.1.0",
+    "@vue/cli-plugin-babel": "^4.1.0",
+    "@vue/cli-plugin-eslint": "^4.1.0",
+    "@vue/cli-service": "^4.1.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "purgecss": "^2.1.0",
+    "vue-cli-plugin-tailwind": "^1.1.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "no-console": "off"
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}

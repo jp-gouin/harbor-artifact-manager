@@ -1,0 +1,86 @@
+import groovy.json.JsonSlurperClassic
+def data = new JsonSlurperClassic().parseText(artefacts)
+echo "data: ${data}"
+pipeline {
+   agent {
+				label 'catalog-build-opti'
+			}
+  stages {
+      stage ('init') {
+	      steps {
+	        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'backends-example']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'jenkins-user-gitlab', url: 'https://gitlab.g3s-service.itcoc.tech/g3s/i3s/backends-example.git']]])
+            sh """
+                mkdir -p deliveries/docker-images
+                mkdir -p deliveries/charts
+                mv backends-example deliveries
+                curl http://<git>/backends-example-master.tar.gz
+                touch deliveries/backends-save-images.sh
+                echo ${params.script} | base64 --decode > deliveries/backends-save-images.sh | chmod +x deliveries/backends-save-images.sh
+                echo "Start saving docker images"
+            """
+	    }
+    }
+    stage ('Package artefacts') {
+          steps {
+            script {
+              container('rkd') {
+                sh """
+                  apt update
+                  apt install -y curl
+                """
+              }
+              def dsteps = [:]
+              data.each { entry ->
+                dsteps["${entry.chartname}"] = {
+                  stage("Packaging ${entry.chartname}") {
+                        container('rkd') {
+                            script {
+                              sh """
+                                if [ ! -z ${entry.charturl} ]; then
+                                  curl --user ${params.harboruser}:${params.harborpass}  ${entry.charturl} --output deliveries/charts/\$(echo  ${entry.charturl} | rev | cut -d/ -f1 | rev)
+                                fi
+                              """
+                              def command=entry.dockerimages.join(' --image ')
+                              echo "${command}"
+                              if (entry.dockerimages.size > 0) {
+                                  sh """
+                                      echo ${command}
+                                      cd /go/bin
+                                      ./rkd-linux-amd64 download --image ${command} --dest ${env.WORKSPACE}/${entry.chartname}
+                                      cd ${env.WORKSPACE}
+                                      gzip ${entry.chartname}/images.tar
+                                      mv ${entry.chartname}/images.tar.gz deliveries/docker-images/${entry.chartname}.tar.gz
+                                """
+                              }
+                            }
+                        }
+                  }
+                }
+              }
+              parallel dsteps
+          }
+        }
+    }
+    stage ('Build final package') {
+		  steps {
+        echo "start packaging deliveries"
+        sh '''
+          tar czf deliveries.tar.gz deliveries
+          echo "cleanup"
+          rm -rf deliveries
+        '''
+		  }
+    }
+    stage ('push delivery to S3') {
+		  steps {
+        container('gcloud-sdk') {
+          sh """
+            echo ${params.googlekey} | base64 --decode > key.json
+            gcloud auth activate-service-account <account>.iam.gserviceaccount.com --key-file=key.json --project=<project>
+            gsutil cp deliveries.tar.gz gs://${params.bucket}/${params.filename}
+          """
+        }   
+		  }
+    }
+  }
+}

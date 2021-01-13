@@ -1,0 +1,11 @@
+{
+    "id": 1,
+    "name": "ADS_Validated",
+    "description": "The binary is validated by TESUP",
+    "color": "#0065AB",
+    "scope": "g",
+    "project_id": 0,
+    "creation_time": "2019-10-31T09:11:46.900839Z",
+    "update_time": "2019-10-31T09:11:46.900839Z",
+    "deleted": false
+  }
